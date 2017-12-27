@@ -20,6 +20,8 @@ EOF
 参考：https://github.com/WALL-E/Journey-to-the-docker/issues/15
 
 ```
+setenforce 0
+
 sudo mkdir -p /etc/docker
 sudo tee /etc/docker/daemon.json <<-'EOF'
 {
@@ -45,9 +47,21 @@ sudo systemctl restart docker
 
 下载tensorflow docker 镜像并启动  
 
+参考：https://hub.docker.com/r/tensorflow/tensorflow/
+
 > docker pull tensorflow/tensorflow  
 
-> docker run -d --name tensorflow_playground tensorflow/tensorflow  
+> docker run --name tf -it -p 8888:8888 tensorflow/tensorflow  
+
+注意：  
+
+如果启动tensorflow 时有如下警告日志，可尝试执行"setenforce 0"后重启docker 服务后再次尝试启动tensorflow：  
+
+> WARNING: IPv4 forwarding is disabled. Networking will not work.  
+
+可访问官方tensorflow 镜像中自带的jupyter 页面  
+
+> http://172.28.32.203:8888  
 
 执行测试程序
 
