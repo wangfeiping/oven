@@ -5,3 +5,5 @@
 ### [第一次系统安装及启动记录](./doc/system.md "系统")
 
 ### [Python 语言学习](./doc/python.md "Python")
+
+### [Tensorflow 学习](./doc/tensorflow.md "Tensorflow")
