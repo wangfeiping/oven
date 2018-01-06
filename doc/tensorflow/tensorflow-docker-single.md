@@ -2,7 +2,11 @@
 
 ### 安装docker  
 
-参考：https://github.com/WALL-E/Journey-to-the-docker/issues/6  
+参考：
+
+> https://github.com/WALL-E/Journey-to-the-docker/issues/6  
+
+> http://python.jobbole.com/87513/  
 
 ```
 > cat >/etc/yum.repos.d/docker.repo <<-EOF
@@ -51,7 +55,7 @@ sudo systemctl restart docker
 
 > docker pull tensorflow/tensorflow  
 
-> docker run --name tf -it -p 8888:8888 tensorflow/tensorflow  
+> docker run --name tf -it -p 6006:6006 -p 8888:8888 tensorflow/tensorflow  
 
 注意：  
 
@@ -66,7 +70,7 @@ sudo systemctl restart docker
 执行测试程序
 
 ```
-> docker exec -it tensorflow_playground bash
+> docker exec -it tf bash
 
 root@241c04a0906a:/notebooks# python
 Python 2.7.12 (default, Nov 20 2017, 18:23:56) 
@@ -88,3 +92,22 @@ Use exit() or Ctrl-D (i.e. EOF) to exit
 >>> exit()
 ```
 
+### 执行神经网络样例程序  
+
+重新启动tensorflow 容器，以便于在宿主机更方便的编辑程序代码。  
+
+> docker run --name tf -it -p 6006:6006 -p 8888:8888 -v /root/data:/data tensorflow/tensorflow  
+
+[例子代码 - Python](./tensorflow/tensorflow-neural-network-sample.py "例子代码 - Python")  
+
+创建代码  
+
+> vi /root/data/tensorflow-neural-network-sample.py  
+
+登入容器  
+
+> docker exec -it tf bash  
+
+执行代码  
+
+> python /data/tensorflow-neural-network-sample.py  
