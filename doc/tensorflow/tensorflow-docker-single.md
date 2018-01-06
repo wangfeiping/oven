@@ -98,7 +98,7 @@ Use exit() or Ctrl-D (i.e. EOF) to exit
 
 > docker run --name tf -it -p 6006:6006 -p 8888:8888 -v /root/data:/data tensorflow/tensorflow  
 
-[例子代码 - Python](./tensorflow/tensorflow-neural-network-sample.py "例子代码 - Python")  
+[例子代码 - Python](./tensorflow-neural-network-sample.py "例子代码 - Python")  
 
 创建代码  
 
