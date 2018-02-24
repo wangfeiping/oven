@@ -4,13 +4,13 @@
 
 > (官方) https://hub.docker.com/_/storm/
 
+> (入门简介) https://yq.aliyun.com/articles/47036
+
 > https://github.com/kubernetes/examples/tree/master/staging/storm
 
 > https://www.jianshu.com/p/74199e8a80f2
 
 > https://community.hortonworks.com/articles/36151/debugging-an-apache-storm-topology.html
-
-> https://yq.aliyun.com/articles/47036
 
 ### 单机docker 集群部署
 
@@ -85,21 +85,23 @@ git checkout v1.1.1
 
 > (官方文档) http://nathanmarz.github.io/storm/doc/overview-summary.html
 
+> (美团：Storm 的可靠性保证测试) https://tech.meituan.com/test-of-storms-reliability.html
+
 > http://blog.csdn.net/jmppok/article/details/17284817
 
 > http://blog.csdn.net/cuihaolong/article/details/52684396
 
 > http://blog.csdn.net/xianzhen376/article/details/53409707
 
-> http://blog.csdn.net/ch717828/article/details/50748912
+> ([翻译]Storm Trident 教程) http://blog.csdn.net/derekjiang/article/details/9126185
 
-> (美团：Storm 的可靠性保证测试) https://tech.meituan.com/test-of-storms-reliability.html
+> http://blog.csdn.net/ch717828/article/details/50748912
 
 > http://www.cnblogs.com/cruze/p/4241181.html
 
 > https://storm.apache.org/releases/1.1.1/storm-kafka.html
 
-> https://basebase.github.io/2016/08/11/storm%E6%95%B4%E5%90%88kafka%E9%87%8D%E5%A4%8D%E6%B6%88%E8%B4%B9%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/
+> (storm整合kafka重复消费问题分析 - BaseBasicBolt与BaseRichBolt 的区别/ACK机制) https://basebase.github.io/2016/08/11/storm%E6%95%B4%E5%90%88kafka%E9%87%8D%E5%A4%8D%E6%B6%88%E8%B4%B9%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/
 
 ### 集群部署 注意：如果重启，需要清理zookeeper 中的数据，否则可能造成启动失败！
 
@@ -133,8 +135,16 @@ docker run -d --restart always --name ui \
 > topology.max.spout.pending=1
 
 ```
-项目源码，基于该项目开发
+项目源码
 https://github.com/apache/storm/tree/master/examples/storm-starter
+
+docker run -it --rm -v $(pwd)/storm-starter-1.1.1.jar:/topology.jar storm \
+  storm \
+  -c nimbus.seeds='["172.28.32.202"]' \
+  -c storm.zookeeper.servers='["192.168.1.169","192.168.1.179","192.168.1.180"]' \
+  jar /topology.jar org.apache.storm.starter.WordCountTopology topology
+
+基于该项目开发kafka 消费计算topo
 
 docker run -it --rm -v $(pwd)/storm-starter-1.1.1.0.jar:/topology.jar storm \
   storm \
@@ -168,10 +178,10 @@ bin/zkCli.sh -server 192.168.1.169:2181,192.168.1.179:2181,192.168.1.180:2181
 
 ### 几个疑问
 
-> 每次重启storm 需要清空或重启zk？
+> 内存管理？内存消耗较大，容易内存溢出造成计算任务异常重启
 
-> 每次topo 异常重启kafka 如何从zk 恢复？可能是strom 自身有kafka 消费失败回滚机制？任务正常重启似乎不会重新消费？
+> 重启？每次重启storm 必须清空或重启zk
 
-> 递归逻辑？
+> 异常恢复？每次topo 异常重启kafka 如何从zk 恢复offset。可能是strom 自身有kafka 消费失败回滚机制，任务正常重启不会重新消费
 
-> topo 最终的计算结果是否可以通过分布式实现？比如，通过kafka 消费（可分布式），分布式的计算局部统计数据，然后输出到kafka 或influxdb 或tidb，最终总的统计结果通过查询计算？
+> 并行计算？Storm 提供了并行计算的能力
